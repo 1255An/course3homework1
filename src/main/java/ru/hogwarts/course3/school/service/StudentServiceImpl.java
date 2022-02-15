@@ -1,6 +1,7 @@
 package ru.hogwarts.course3.school.service;
 
 import org.springframework.stereotype.Service;
+import ru.hogwarts.course3.school.model.Faculty;
 import ru.hogwarts.course3.school.model.Student;
 
 import java.util.Collection;
@@ -23,12 +24,15 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student findStudent(long id) {
-        return students.get(id);
+        if (isStudentExist(students.get(id))) {
+            return students.get(id);
+        }
+        return null;
     }
 
     @Override
     public Student editStudent(Student student) {
-        if (students.containsKey(student.getId())) {
+        if (isStudentExist(student)) {
             students.put(student.getId(), student);
             return student;
         }
@@ -37,7 +41,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student deleteStudent(long id) {
-        if (students.containsKey(id)) {
+        if (isStudentExist(students.get(id))) {
             return students.remove(id);
         }
         return null;
@@ -55,4 +59,7 @@ public class StudentServiceImpl implements StudentService {
                 .collect(Collectors.toList());
     }
 
+    private boolean isStudentExist(Student student) {
+        return students.containsKey(student.getId());
+    }
 }

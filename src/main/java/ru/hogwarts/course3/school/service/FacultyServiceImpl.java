@@ -22,7 +22,7 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty findFaculty(long id) {
-        if (faculties.containsKey(id)) {
+        if (isFacultyExist(faculties.get(id))) {
             return faculties.get(id);
         }
         return null;
@@ -30,7 +30,7 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty editFaculty(Faculty faculty) {
-        if (faculties.containsKey(faculty.getId())) {
+        if (isFacultyExist(faculty)) {
             faculties.put(faculty.getId(), faculty);
             return faculty;
         }
@@ -39,7 +39,7 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty deleteFaculty(long id) {
-        if (faculties.containsKey(id)) {
+        if (isFacultyExist(faculties.get(id))) {
             return faculties.remove(id);
         }
         return null;
@@ -55,5 +55,9 @@ public class FacultyServiceImpl implements FacultyService {
         return faculties.values().stream()
                 .filter(faculty -> faculty.getColor().equals(color))
                 .collect(Collectors.toList());
+    }
+
+    private boolean isFacultyExist(Faculty faculty) {
+        return faculties.containsKey(faculty.getId());
     }
 }
