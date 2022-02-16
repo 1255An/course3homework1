@@ -24,7 +24,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student findStudent(long id) {
-        if (isStudentExist(students.get(id))) {
+        if (students.containsKey(id)) {
             return students.get(id);
         }
         return null;
@@ -32,7 +32,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student editStudent(Student student) {
-        if (isStudentExist(student)) {
+        if (students.containsKey(student.getId())) {
             students.put(student.getId(), student);
             return student;
         }
@@ -41,7 +41,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student deleteStudent(long id) {
-        if (isStudentExist(students.get(id))) {
+        if (students.containsKey(id)) {
             return students.remove(id);
         }
         return null;
@@ -59,7 +59,4 @@ public class StudentServiceImpl implements StudentService {
                 .collect(Collectors.toList());
     }
 
-    private boolean isStudentExist(Student student) {
-        return students.containsKey(student.getId());
-    }
 }
