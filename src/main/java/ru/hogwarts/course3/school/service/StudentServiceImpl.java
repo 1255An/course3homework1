@@ -6,6 +6,7 @@ import ru.hogwarts.course3.school.model.Student;
 import ru.hogwarts.course3.school.repository.StudentRepository;
 
 import java.util.Collection;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,12 +20,18 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student createStudent(Student student) {
-        return studentRepository.save(student);
-    }
+        if (studentRepository.existsById(student.getId())) {
+            throw new IllegalArgumentException();
+        }
+            return studentRepository.save(student);
+        }
 
     @Override
     public Student findStudent(long id) {
-        return studentRepository.findById(id).get();
+        if (studentRepository.existsById(id)) {
+            return studentRepository.findById(id).get();
+        }
+        return null;
     }
 
     @Override
@@ -34,6 +41,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void deleteStudent(long id) {
+        if (!studentRepository.existsById(id)) {
+            throw new NoSuchElementException();
+        }
         studentRepository.deleteById(id);
     }
 

@@ -7,7 +7,9 @@ import ru.hogwarts.course3.school.model.Faculty;
 import ru.hogwarts.course3.school.service.FacultyService;
 
 
+
 import java.util.Collection;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("faculty")
@@ -20,15 +22,20 @@ public class FacultyController {
     }
 
     @PostMapping
-    public Faculty createFaculty(@RequestBody Faculty faculty) {
-        return facultyService.createFaculty(faculty);
+    public ResponseEntity <Faculty> createFaculty(@RequestBody Faculty faculty) {
+        try {
+            Faculty createdFaculty = facultyService.createFaculty(faculty);
+            return ResponseEntity.ok(createdFaculty);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @GetMapping("{id}")
     public ResponseEntity<Faculty> getFacultyInfo(@PathVariable Long id) {
         Faculty faculty = facultyService.findFaculty(id);
         if (faculty == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         return ResponseEntity.ok(faculty);
     }
@@ -41,16 +48,17 @@ public class FacultyController {
     @PutMapping
     public ResponseEntity<Faculty> editFaculty(@RequestBody Faculty faculty) {
         Faculty foundFaculty = facultyService.editFaculty(faculty);
-        if (foundFaculty == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        return ResponseEntity.ok(faculty);
+        return ResponseEntity.ok(foundFaculty);
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Faculty> deleteFaculty(@PathVariable Long id) {
-        facultyService.deleteFaculty(id);
-        return ResponseEntity.ok().build();
+        try {
+            facultyService.deleteFaculty(id);
+            return ResponseEntity.ok().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @GetMapping("/findByColor/{color}")
