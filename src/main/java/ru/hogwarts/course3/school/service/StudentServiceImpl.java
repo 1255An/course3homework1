@@ -20,18 +20,16 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student createStudent(Student student) {
-        if (studentRepository.existsById(student.getId())) {
-            throw new IllegalArgumentException();
-        }
-            return studentRepository.save(student);
-        }
+        return studentRepository.save(student);
+    }
 
     @Override
-    public Student findStudent(long id) {
+    public Student findStudent(Long id) {
         if (studentRepository.existsById(id)) {
             return studentRepository.findById(id).get();
+        } else {
+            return null;
         }
-        return null;
     }
 
     @Override
@@ -40,10 +38,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void deleteStudent(long id) {
-        if (!studentRepository.existsById(id)) {
-            throw new NoSuchElementException();
-        }
+    public void deleteStudent(Long id) {
         studentRepository.deleteById(id);
     }
 

@@ -20,9 +20,6 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty createFaculty(Faculty faculty) {
-        if (facultyRepository.existsById(faculty.getId())) {
-            throw new IllegalArgumentException();
-        }
         return facultyRepository.save(faculty);
     }
 
@@ -41,9 +38,6 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public void deleteFaculty(Long id) {
-        if (!facultyRepository.existsById(id)) {
-            throw new NoSuchElementException();
-        }
         facultyRepository.deleteById(id);
     }
 
