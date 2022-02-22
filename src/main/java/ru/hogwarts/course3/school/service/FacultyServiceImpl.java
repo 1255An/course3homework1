@@ -20,6 +20,9 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty createFaculty(Faculty faculty) {
+        if (facultyRepository.existsById(faculty.getId())) {
+            return null;
+        }
         return facultyRepository.save(faculty);
     }
 

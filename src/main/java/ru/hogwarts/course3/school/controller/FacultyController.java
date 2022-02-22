@@ -24,17 +24,18 @@ public class FacultyController {
 
     @PostMapping
     public ResponseEntity <Faculty> createFaculty(@RequestBody Faculty faculty) {
-        if (faculty.getId() !=null) {
+        Faculty createdFaculty = facultyService.createFaculty(faculty);
+        if (createdFaculty ==null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(facultyService.createFaculty(faculty));
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdFaculty);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Faculty> getFacultyInfo(@PathVariable Long id) {
+    public ResponseEntity <Faculty> getFacultyInfo(@PathVariable Long id) {
         Faculty faculty = facultyService.findFaculty(id);
         if (faculty == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(faculty);
     }
@@ -56,7 +57,7 @@ public class FacultyController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Faculty> deleteFaculty(@PathVariable Long id) {
         if (facultyService.findFaculty(id) == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         facultyService.deleteFaculty(id);
         return ResponseEntity.ok().build();

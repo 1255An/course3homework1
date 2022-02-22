@@ -23,21 +23,21 @@ public class StudentController {
 
     @PostMapping
     public ResponseEntity<Student> createStudent(@RequestBody Student student) {
-        if (student.getId() != null) {
+        Student createdStudent = studentService.createStudent(student);
+        if (createdStudent == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        studentService.createStudent(student);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdStudent);
     }
 
 
     @GetMapping("/{id}")
-    public Student getStudentInfo(@PathVariable Long id) {
+    public ResponseEntity <Student> getStudentInfo(@PathVariable Long id) {
         Student student = studentService.findStudent(id);
         if (student == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return student;
+        return ResponseEntity.ok(student);
     }
 
     @GetMapping
@@ -56,12 +56,12 @@ public class StudentController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Student> deleteStudent(@PathVariable Long id) {
-        if (studentService.findStudent(id) == null ) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        if (studentService.findStudent(id) == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-         studentService.deleteStudent(id);
+        studentService.deleteStudent(id);
         return ResponseEntity.ok().build();
-}
+    }
 
     @GetMapping("/findByAge/{age}")
     public ResponseEntity<Collection<Student>> findStudentsByAge(@PathVariable Integer age) {

@@ -20,6 +20,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student createStudent(Student student) {
+        if (studentRepository.existsById(student.getId())) {
+            return null;
+        }
         return studentRepository.save(student);
     }
 
