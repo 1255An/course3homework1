@@ -1,12 +1,10 @@
 package ru.hogwarts.course3.school.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.course3.school.model.Student;
 import ru.hogwarts.course3.school.repository.StudentRepository;
 
 import java.util.Collection;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,9 +18,6 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student createStudent(Student student) {
-        if (studentRepository.existsById(student.getId())) {
-            return null;
-        }
         return studentRepository.save(student);
     }
 
@@ -55,6 +50,11 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.findAll().stream()
                 .filter(student -> student.getAge() == age)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<Student> findStudentByAgeBetween (Integer minAge, Integer maxAge) {
+        return studentRepository.findStudentByAgeBetween(minAge, maxAge);
     }
 
 }

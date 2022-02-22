@@ -7,10 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.hogwarts.course3.school.model.Faculty;
 import ru.hogwarts.course3.school.service.FacultyService;
 
-
-
 import java.util.Collection;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("faculty")
@@ -23,26 +20,20 @@ public class FacultyController {
     }
 
     @PostMapping
-    public ResponseEntity <Faculty> createFaculty(@RequestBody Faculty faculty) {
-        Faculty createdFaculty = facultyService.createFaculty(faculty);
-        if (createdFaculty ==null) {
+    public ResponseEntity<Faculty> createFaculty(@RequestBody Faculty faculty) {
+        if (faculty.getId() != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdFaculty);
+        return ResponseEntity.status(HttpStatus.CREATED).body(facultyService.createFaculty(faculty));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity <Faculty> getFacultyInfo(@PathVariable Long id) {
+    public ResponseEntity<Faculty> getFacultyInfo(@PathVariable Long id) {
         Faculty faculty = facultyService.findFaculty(id);
         if (faculty == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(faculty);
-    }
-
-    @GetMapping
-    public ResponseEntity<Collection<Faculty>> getAllFaculties() {
-        return ResponseEntity.ok(facultyService.getAllFaculties());
     }
 
     @PutMapping
@@ -63,8 +54,16 @@ public class FacultyController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/findByColor/{color}")
-    public ResponseEntity<Collection<Faculty>> findFacultiesByColor(@PathVariable String color) {
-        return ResponseEntity.ok(facultyService.findFacultiesByColor(color));
+    @GetMapping
+    public ResponseEntity findFaculties(@RequestParam(required = false) String name,
+                                        @RequestParam(required = false) String color) {
+
+        if (name != null && !name.isBlank()) {
+            return ResponseEntity.ok(facultyService.findFacultiesByName(name));
+        }
+        if (color != null && !color.isBlank()) {
+            return ResponseEntity.ok(facultyService.findFacultiesByColor(color));
+        }
+        return ResponseEntity.ok(facultyService.getAllFaculties());
     }
 }
