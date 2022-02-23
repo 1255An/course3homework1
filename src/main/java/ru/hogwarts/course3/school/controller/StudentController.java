@@ -58,11 +58,12 @@ public class StudentController {
                                            @RequestParam(required = false) Integer maxAge,
                                            @RequestParam(required = false) Integer age) {
         if (minAge != null && maxAge != null) {
-            return ResponseEntity.ok(studentService.findStudentByAgeBetween(minAge, maxAge));
+            return ResponseEntity.ok(studentService.findStudentsByAgeBetween(minAge, maxAge));
         }
         if (age != null) {
             return ResponseEntity.ok(studentService.findStudentsByAge(age));
         }
         return ResponseEntity.ok(studentService.getAllStudents());
     }
+
 }

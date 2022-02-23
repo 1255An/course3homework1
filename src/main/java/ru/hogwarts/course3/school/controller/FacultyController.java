@@ -59,10 +59,10 @@ public class FacultyController {
                                         @RequestParam(required = false) String color) {
 
         if (name != null && !name.isBlank()) {
-            return ResponseEntity.ok(facultyService.findFacultiesByName(name));
+            return ResponseEntity.ok(facultyService.findFacultiesByNameOrColor(name, null));
         }
         if (color != null && !color.isBlank()) {
-            return ResponseEntity.ok(facultyService.findFacultiesByColor(color));
+            return ResponseEntity.ok(facultyService.findFacultiesByNameOrColor(null, color));
         }
         return ResponseEntity.ok(facultyService.getAllFaculties());
     }
