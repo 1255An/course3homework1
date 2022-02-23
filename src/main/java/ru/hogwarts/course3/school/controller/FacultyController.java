@@ -7,8 +7,6 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.hogwarts.course3.school.model.Faculty;
 import ru.hogwarts.course3.school.service.FacultyService;
 
-import java.util.Collection;
-
 @RestController
 @RequestMapping("faculty")
 public class FacultyController {
