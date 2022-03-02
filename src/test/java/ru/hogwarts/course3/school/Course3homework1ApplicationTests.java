@@ -19,8 +19,10 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static ru.hogwarts.course3.school.dataTest.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+
 class Course3homework1ApplicationTests {
 
     @LocalServerPort
@@ -32,38 +34,28 @@ class Course3homework1ApplicationTests {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    private final String name = "Alice";
-    private final Long id = 100L;
-    private final int age = 16;
-
     @Test
     public void contextLoads() throws Exception {
         assertThat(studentController).isNotNull();
     }
 
     @Test
-    public void postStudentTest() throws Exception {
-        Student student = new Student();
-        student.setName("Alice");
-        student.setAge(16);
+    public void createStudentTest() throws Exception {
+        Student student = new Student(STUDENT_NAME_1, STUDENT_AGE_1, null);
 
         ResponseEntity<Student> response = this.restTemplate.postForEntity("http://localhost:" + port +
                 "/student", student, Student.class);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNotNull(response.getBody().getId());
-        assertEquals(name, response.getBody().getName());
-        assertEquals(age, response.getBody().getAge());
+        assertEquals(STUDENT_NAME_1, response.getBody().getName());
+        assertEquals(STUDENT_AGE_1, response.getBody().getAge());
 
     }
 
-
     @Test
-    public void postStudentTestIfIdIsNotNull() throws Exception {
-        Student student = new Student();
-        student.setId(1L);
-        student.setName("Alice");
-        student.setAge(16);
+    public void createStudentTestIfIdIsNotNull() throws Exception {
+        Student student = new Student(STUDENT_ID_1, STUDENT_NAME_1, STUDENT_AGE_1, null);
 
         ResponseEntity<Student> response = this.restTemplate.postForEntity("http://localhost:" + port +
                 "/student", student, Student.class);
@@ -74,46 +66,43 @@ class Course3homework1ApplicationTests {
     @Test
     @Sql("/test.sql")
     public void getStudentByIdTest() throws Exception {
+
         ResponseEntity<Student> response = this.restTemplate.getForEntity("http://localhost:" + port +
-                "/student/100", Student.class);
+                "/student/{id}", Student.class, STUDENT_ID_1);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(id, response.getBody().getId());
-        assertEquals(name, response.getBody().getName());
-        assertEquals(age, response.getBody().getAge());
+        assertEquals(1, response.getBody().getId());
+        assertEquals("Phoebe", response.getBody().getName());
+        assertEquals(26, response.getBody().getAge());
     }
 
     @Test
     public void getStudentIfNotExist() throws Exception {
         ResponseEntity<Student> response = this.restTemplate.getForEntity("http://localhost:" + port +
-                "/student/5", Student.class);
+                "/student/{id}", Student.class, STUDENT_ID_5);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-
     }
 
     @Test
     @Sql("/test.sql")
     public void editStudentTest() throws Exception {
-        Student student = new Student();
-        student.setId(100L);
-        student.setName("Joe");
-        student.setAge(20);
+        Student student = new Student(STUDENT_ID_1, STUDENT_NAME_2, STUDENT_AGE_2, null);
 
         ResponseEntity<Student> response = this.restTemplate.exchange("http://localhost:" + port +
                 "/student", HttpMethod.PUT, new HttpEntity<>(student), Student.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(id, response.getBody().getId());
-        assertEquals("Joe", response.getBody().getName());
-        assertEquals(20, response.getBody().getAge());
+        assertEquals(STUDENT_ID_1, response.getBody().getId());
+        assertEquals(STUDENT_NAME_2, response.getBody().getName());
+        assertEquals(STUDENT_AGE_2, response.getBody().getAge());
     }
 
     @Test
     @Sql("/test.sql")
     public void deleteStudentTest() throws Exception {
         ResponseEntity<Student> response = this.restTemplate.exchange("http://localhost:" + port +
-                "/student/100", HttpMethod.DELETE, null, Student.class);
+                "/student/{id}", HttpMethod.DELETE, null, Student.class, STUDENT_ID_1);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNull(response.getBody());
@@ -123,7 +112,7 @@ class Course3homework1ApplicationTests {
     @Sql("/test.sql")
     public void deleteStudentIfNotExistTest() throws Exception {
         ResponseEntity<Student> response = this.restTemplate.exchange("http://localhost:" + port +
-                "/student/102", HttpMethod.DELETE, null, Student.class);
+                "/student/{id}", HttpMethod.DELETE, null, Student.class, STUDENT_ID_5);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -132,25 +121,25 @@ class Course3homework1ApplicationTests {
     @Sql("/test.sql")
     public void findStudentsByAge() throws Exception {
         ResponseEntity<List<Student>> response = this.restTemplate.exchange("http://localhost:" + port +
-                        "/student?age=10", HttpMethod.GET,
+                        "/student?age=26", HttpMethod.GET,
                 null, new ParameterizedTypeReference<List<Student>>() {
                 });
         List<Student> students = response.getBody();
         assertEquals(1, students.size());
-        assertEquals("Tom", students.get(0).getName());
+        assertEquals("Phoebe", students.get(0).getName());
     }
 
     @Test
     @Sql("/test.sql")
     public void findStudentsByAgeBetween() throws Exception {
         ResponseEntity<List<Student>> response = this.restTemplate.exchange("http://localhost:" + port +
-                        "/student?minAge=15&maxAge=20", HttpMethod.GET,
+                        "/student?minAge=20&maxAge=29", HttpMethod.GET,
                 null, new ParameterizedTypeReference<List<Student>>() {
                 });
         List<Student> students = response.getBody();
         assertEquals(2, students.size());
-        assertEquals("Alice", students.get(0).getName());
-        assertEquals("Brad", students.get(1).getName());
+        assertEquals("Phoebe", students.get(0).getName());
+        assertEquals("Janis", students.get(1).getName());
     }
 
     @Test
@@ -162,9 +151,10 @@ class Course3homework1ApplicationTests {
                 });
         List<Student> students = response.getBody();
         assertEquals(3, students.size());
-        assertEquals("Alice", students.get(0).getName());
-        assertEquals("Tom", students.get(1).getName());
-        assertEquals("Brad", students.get(2).getName());
+        assertEquals("Phoebe", students.get(0).getName());
+        assertEquals("Ross", students.get(1).getName());
+        assertEquals("Janis", students.get(2).getName());
     }
+
 }
 

@@ -1,3 +1,3 @@
-insert into student (ID, NAME, AGE) VALUES (100, 'Alice', 16)
-insert into student (ID, NAME, AGE) VALUES (105, 'Tom', 10)
-insert into student (ID, NAME, AGE) VALUES (110, 'Brad', 20)
+insert into student (ID, NAME, AGE) VALUES (1, 'Phoebe', 26)
+insert into student (ID, NAME, AGE) VALUES (2, 'Ross', 30)
+insert into student (ID, NAME, AGE) VALUES (3, 'Janis', 20)
