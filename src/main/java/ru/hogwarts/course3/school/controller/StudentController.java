@@ -7,6 +7,8 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.hogwarts.course3.school.model.Student;
 import ru.hogwarts.course3.school.service.StudentService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("student")
 public class StudentController {
@@ -64,6 +66,21 @@ public class StudentController {
             return ResponseEntity.ok(studentService.findStudentsByAge(age));
         }
         return ResponseEntity.ok(studentService.getAllStudents());
+    }
+
+    @GetMapping("/count")
+    public int getStudentCount() {
+        return studentService.getStudentsCount();
+    }
+
+    @GetMapping("/averageAge")
+    public int getStudentAvgAge() {
+        return studentService.getStudentsAvgAge();
+    }
+
+    @GetMapping("/last/{count}")
+    public List<Student> getLastStudents(@PathVariable int count) {
+        return studentService.getLastStudents(count);
     }
 
 }
