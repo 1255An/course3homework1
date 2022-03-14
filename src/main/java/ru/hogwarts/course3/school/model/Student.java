@@ -18,7 +18,10 @@ public class Student {
     private Faculty faculty;
 
     public Student() {
-        ;
+    }
+
+    public Student(String name, int age, Faculty faculty) {
+        this(null, name, age, faculty);
     }
 
     public Student(Long id, String name, Integer age, Faculty faculty) {
@@ -27,6 +30,7 @@ public class Student {
         this.age = age;
         this.faculty = faculty;
     }
+
 
     public Long getId() {
         return id;
