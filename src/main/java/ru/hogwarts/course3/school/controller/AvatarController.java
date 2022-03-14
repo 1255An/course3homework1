@@ -59,11 +59,6 @@ public class AvatarController {
             is.transferTo(os);
         }
     }
-
-    @GetMapping(params = {"page", "size"})
-    public List<Avatar> getAvatarPage(@RequestParam int page, @RequestParam int size) {
-        return avatarService.getAvatarPage(page, size);
-    }
 }
 
 

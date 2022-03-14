@@ -10,6 +10,4 @@ public interface AvatarService {
     Long uploadAvatar(Long studentId, MultipartFile avatarFile) throws IOException;
 
     Avatar findAvatar(Long id);
-
-    List<Avatar> getAvatarPage(int page, int size);
 }

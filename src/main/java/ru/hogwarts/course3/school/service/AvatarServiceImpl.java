@@ -50,13 +50,6 @@ public class AvatarServiceImpl implements AvatarService {
         return avatarRepository.getById(id);
     }
 
-    @Override
-    public List<Avatar> getAvatarPage(int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page - 1, size);
-        return avatarRepository.findAll(pageRequest).toList();
-    }
-
-
     private Path createImageFilePath(MultipartFile avatarFile, Student student) throws IOException {
         Path filePath = Path.of(avatarsDir, student + "." + getExtensions(avatarFile.getOriginalFilename()));
         Files.createDirectories(filePath.getParent());
