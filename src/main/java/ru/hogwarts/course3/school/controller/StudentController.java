@@ -7,6 +7,8 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.hogwarts.course3.school.model.Student;
 import ru.hogwarts.course3.school.service.StudentService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("student")
 public class StudentController {
@@ -65,5 +67,4 @@ public class StudentController {
         }
         return ResponseEntity.ok(studentService.getAllStudents());
     }
-
 }
