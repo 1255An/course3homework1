@@ -4,6 +4,7 @@ import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.hogwarts.course3.school.model.Student;
 import ru.hogwarts.course3.school.service.StudentService;
 
@@ -22,19 +23,19 @@ public class StudentController {
 
     @PostMapping
     public ResponseEntity<Student> createStudent(@RequestBody Student student) {
-        try {
-            studentService.createStudent(student);
-            return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        Student createdStudent = studentService.createStudent(student);
+        if (createdStudent == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdStudent);
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<Student> getStudentInfo(@PathVariable Long id) {
+
+    @GetMapping("/{id}")
+    public ResponseEntity <Student> getStudentInfo(@PathVariable Long id) {
         Student student = studentService.findStudent(id);
         if (student == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(student);
     }
@@ -46,18 +47,20 @@ public class StudentController {
 
     @PutMapping
     public ResponseEntity<Student> editStudent(@RequestBody Student student) {
+        if (student.getId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
         Student foundStudent = studentService.editStudent(student);
         return ResponseEntity.ok(foundStudent);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Student> deleteStudent(@PathVariable Long id) {
-        try {
-            studentService.deleteStudent(id);
-            return ResponseEntity.ok().build();
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        if (studentService.findStudent(id) == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+        studentService.deleteStudent(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/findByAge/{age}")

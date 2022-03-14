@@ -7,11 +7,11 @@ import java.util.Collection;
 public interface StudentService {
     Student createStudent(Student student);
 
-    Student findStudent(long id);
+    Student findStudent(Long id);
 
     Student editStudent(Student student);
 
-    void deleteStudent(long id);
+    void deleteStudent(Long id);
 
     Collection<Student> getAllStudents();
 

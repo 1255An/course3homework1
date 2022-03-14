@@ -3,6 +3,7 @@ package ru.hogwarts.course3.school.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.hogwarts.course3.school.model.Faculty;
 import ru.hogwarts.course3.school.service.FacultyService;
 
@@ -23,19 +24,18 @@ public class FacultyController {
 
     @PostMapping
     public ResponseEntity <Faculty> createFaculty(@RequestBody Faculty faculty) {
-        try {
-            Faculty createdFaculty = facultyService.createFaculty(faculty);
-            return ResponseEntity.ok(createdFaculty);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        Faculty createdFaculty = facultyService.createFaculty(faculty);
+        if (createdFaculty ==null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdFaculty);
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<Faculty> getFacultyInfo(@PathVariable Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity <Faculty> getFacultyInfo(@PathVariable Long id) {
         Faculty faculty = facultyService.findFaculty(id);
         if (faculty == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(faculty);
     }
@@ -47,18 +47,20 @@ public class FacultyController {
 
     @PutMapping
     public ResponseEntity<Faculty> editFaculty(@RequestBody Faculty faculty) {
+        if (faculty.getId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
         Faculty foundFaculty = facultyService.editFaculty(faculty);
         return ResponseEntity.ok(foundFaculty);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Faculty> deleteFaculty(@PathVariable Long id) {
-        try {
-            facultyService.deleteFaculty(id);
-            return ResponseEntity.ok().build();
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        if (facultyService.findFaculty(id) == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+        facultyService.deleteFaculty(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/findByColor/{color}")
