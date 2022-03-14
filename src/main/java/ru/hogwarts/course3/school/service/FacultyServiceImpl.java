@@ -1,13 +1,10 @@
 package ru.hogwarts.course3.school.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.course3.school.model.Faculty;
 import ru.hogwarts.course3.school.repository.FacultyRepository;
 
 import java.util.Collection;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 public class FacultyServiceImpl implements FacultyService {
@@ -20,9 +17,6 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty createFaculty(Faculty faculty) {
-        if (facultyRepository.existsById(faculty.getId())) {
-            return null;
-        }
         return facultyRepository.save(faculty);
     }
 
@@ -51,10 +45,8 @@ public class FacultyServiceImpl implements FacultyService {
     }
 
     @Override
-    public Collection<Faculty> findFacultiesByColor(String color) {
-        return facultyRepository.findAll().stream()
-                .filter(faculty -> faculty.getColor().equals(color))
-                .collect(Collectors.toList());
+    public Collection<Faculty> findFacultiesByNameOrColor(String name, String color) {
+        return facultyRepository.findFacultiesByNameIgnoreCaseOrColorIgnoreCase(name, color);
     }
 
 }
