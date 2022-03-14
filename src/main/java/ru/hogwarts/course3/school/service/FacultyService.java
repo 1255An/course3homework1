@@ -4,15 +4,16 @@ import ru.hogwarts.course3.school.model.Faculty;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 
 public interface FacultyService {
     Faculty createFaculty(Faculty faculty);
 
-    Faculty findFaculty(long id);
+    Faculty findFaculty(Long id);
 
     Faculty editFaculty(Faculty faculty);
 
-    Faculty deleteFaculty(long id);
+    void deleteFaculty(Long id);
 
     Collection<Faculty> getAllFaculties();
 
