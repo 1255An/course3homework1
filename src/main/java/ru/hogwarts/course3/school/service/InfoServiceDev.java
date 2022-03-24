@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service
-@Profile("test")
-public class InfoServiceTest implements InfoSerivce {
+@Profile("dev")
+public class InfoServiceDev implements InfoSerivce {
 
     @Value("${server.port}")
     private int port;
