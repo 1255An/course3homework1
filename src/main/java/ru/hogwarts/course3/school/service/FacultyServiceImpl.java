@@ -7,6 +7,8 @@ import ru.hogwarts.course3.school.model.Faculty;
 import ru.hogwarts.course3.school.repository.FacultyRepository;
 
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.Optional;
 
 @Service
 public class FacultyServiceImpl implements FacultyService {
@@ -51,13 +53,22 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Collection<Faculty> getAllFaculties() {
-        logger.info ("Method for getting all faculties was invoked");
+        logger.info("Method for getting all faculties was invoked");
         return facultyRepository.findAll();
     }
 
     @Override
     public Collection<Faculty> findFacultiesByNameOrColor(String name, String color) {
-        logger.info ("Method for finding faculty by name/color was invoked");
+        logger.info("Method for finding faculty by name/color was invoked");
         return facultyRepository.findFacultiesByNameIgnoreCaseOrColorIgnoreCase(name, color);
     }
+
+    @Override
+    public Optional<String> getLongestFacultyName() {
+        Optional<String> longestName = facultyRepository.findAll().stream()
+                .map(f -> f.getName())
+                .max(Comparator.comparing(String::valueOf));
+        return longestName;
+    }
 }
+
