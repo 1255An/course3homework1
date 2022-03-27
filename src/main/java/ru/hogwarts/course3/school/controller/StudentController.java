@@ -83,14 +83,9 @@ public class StudentController {
         return studentService.getLastStudents(count);
     }
 
-    @GetMapping("/get/nameStartsWithLetter")
+    @GetMapping("/nameStartsWithA")
     public List<String> getStudentsNameStartsWithA() {
         return studentService.getStudentsNameStartsWithA();
-    }
-
-    @GetMapping("/findAverageAge")
-    public Double getAvgAgeOfStudents() {
-        return studentService.getAvgAgeOfStudents();
     }
 
     @GetMapping("/quickSumOfSequence")

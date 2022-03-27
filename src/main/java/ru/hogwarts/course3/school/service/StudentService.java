@@ -26,8 +26,6 @@ public interface StudentService {
 
     List<Student> getLastStudents(int count);
 
-    Double getAvgAgeOfStudents();
-
     List<String> getStudentsNameStartsWithA();
 
     int quickSumOfSequence();

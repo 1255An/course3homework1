@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 @Service
 public class StudentServiceImpl implements StudentService {
 
-    Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
+   private static final Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
 
     private final StudentRepository studentRepository;
 
@@ -31,8 +31,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student findStudent(Long id) {
-        logger.info("Method for finding student was invoked");
-        logger.debug("Request to find student with id: {} ", id);
+        logger.info("Method for finding student with id {} was invoked", id);
         if (studentRepository.existsById(id)) {
             return studentRepository.findById(id).get();
         } else {
@@ -49,8 +48,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void deleteStudent(Long id) {
-        logger.info("Method for deleting student was invoked");
-        logger.debug("Request to delete student with id: {} ", id);
+        logger.info("Method for deleting student with id {} was invoked", id);
         studentRepository.deleteById(id);
     }
 
@@ -62,8 +60,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Collection<Student> findStudentsByAge(Integer age) {
-        logger.info("Method for finding students by age was invoked");
-        logger.debug("Request to find students with age: {} ", age);
+        logger.info("Method for finding students with age {} was invoked", age);
         return studentRepository.findAll().stream()
                 .filter(student -> student.getAge() == age)
                 .collect(Collectors.toList());
@@ -71,8 +68,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Collection<Student> findStudentsByAgeBetween(Integer minAge, Integer maxAge) {
-        logger.info("Method for finding students by age between was invoked");
-        logger.debug("Request to find students with age between {} and {}", minAge, maxAge);
+        logger.info("Method for finding students by age between {} and {} was invoked", minAge, maxAge);
         return studentRepository.findStudentByAgeBetween(minAge, maxAge);
     }
 
@@ -85,38 +81,40 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public int getStudentsAvgAge() {
         logger.info("Method for counting average amount of students was invoked");
-        return studentRepository.getStudentsAvgAge();
+    //    return studentRepository.getStudentsAvgAge();
+        return (int) studentRepository.findAll().stream()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElse(0);
     }
 
     @Override
     public List<Student> getLastStudents(int count) {
-        logger.info("Method for getting last " + count + " students was invoked");
-        logger.debug("Request to get last {} students", count);
+        logger.info("Method for getting last {} students was invoked", count);
         return studentRepository.getLastStudents(count);
     }
 
     @Override
     public List<String> getStudentsNameStartsWithA() {
-        List<String> names = studentRepository.findAll().stream()
-                .filter(s -> s.getName().toUpperCase().startsWith("A"))
-                .map(s -> s.getName().toUpperCase())
-                .sorted(Comparator.comparing(String::valueOf))
-                .collect(Collectors.toList());
-        return names;
-    }
-
-    @Override
-    public Double getAvgAgeOfStudents() {
+        logger.info("Method for getting all names of students starting with A was invoked");
         return studentRepository.findAll().stream()
-                .collect(Collectors.averagingInt(Student::getAge));
+                .parallel()
+                .filter(s -> s.getName().toUpperCase().startsWith("A"))
+                .map(Student::getName)
+                .map(String::toUpperCase)
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     @Override
     public int quickSumOfSequence() {
-        int result = Stream.iterate(1, a -> a + 1)
+        List<Integer> sequence = Stream.iterate(1, a -> a + 1)
                 .limit(1_000_000)
+                .collect(Collectors.toList());
+        int result = sequence.stream()
                 .parallel()
-                .reduce(0, (a, b) -> a + b);
+                .mapToInt(a->a)
+                .sum();
         return result;
     }
 }
