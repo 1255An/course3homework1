@@ -82,4 +82,14 @@ public class StudentController {
     public List<Student> getLastStudents(@PathVariable int count) {
         return studentService.getLastStudents(count);
     }
+
+    @GetMapping("/nameStartsWithA")
+    public List<String> getStudentsNameStartsWithA() {
+        return studentService.getStudentsNameStartsWithA();
+    }
+
+    @GetMapping("/quickSumOfSequence")
+    public int quickSumOfSequence() {
+        return studentService.quickSumOfSequence();
+    }
 }

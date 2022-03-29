@@ -7,6 +7,8 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.hogwarts.course3.school.model.Faculty;
 import ru.hogwarts.course3.school.service.FacultyService;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("faculty")
 public class FacultyController {
@@ -63,5 +65,10 @@ public class FacultyController {
             return ResponseEntity.ok(facultyService.findFacultiesByNameOrColor(null, color));
         }
         return ResponseEntity.ok(facultyService.getAllFaculties());
+    }
+
+    @GetMapping("/theLongestName")
+    public String getLongestFacultyName() {
+        return facultyService.getLongestFacultyName();
     }
 }

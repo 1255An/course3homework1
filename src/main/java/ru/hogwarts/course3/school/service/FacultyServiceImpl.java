@@ -7,11 +7,13 @@ import ru.hogwarts.course3.school.model.Faculty;
 import ru.hogwarts.course3.school.repository.FacultyRepository;
 
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.Optional;
 
 @Service
 public class FacultyServiceImpl implements FacultyService {
 
-    Logger logger = LoggerFactory.getLogger(FacultyServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(FacultyServiceImpl.class);
 
     private final FacultyRepository facultyRepository;
 
@@ -27,8 +29,7 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty findFaculty(Long id) {
-        logger.info ("Method for finding faculty was invoked");
-        logger.debug("Request to find faculty with id: {} ", id );
+        logger.info("Method for finding faculty with id {} was invoked", id);
         if (facultyRepository.existsById(id)) {
             return facultyRepository.findById(id).get();
         }
@@ -44,20 +45,29 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public void deleteFaculty(Long id) {
-        logger.info ("Method for deleting faculty was invoked");
-        logger.debug("Request to delete faculty with id: {} ", id );
+        logger.info("Method for deleting faculty with id {} was invoked", id);
         facultyRepository.deleteById(id);
     }
 
     @Override
     public Collection<Faculty> getAllFaculties() {
-        logger.info ("Method for getting all faculties was invoked");
+        logger.info("Method for getting all faculties was invoked");
         return facultyRepository.findAll();
     }
 
     @Override
     public Collection<Faculty> findFacultiesByNameOrColor(String name, String color) {
-        logger.info ("Method for finding faculty by name/color was invoked");
+        logger.info("Method for finding faculty by name '{}' or color '{}' was invoked", name, color);
         return facultyRepository.findFacultiesByNameIgnoreCaseOrColorIgnoreCase(name, color);
     }
+
+    @Override
+    public String getLongestFacultyName() {
+        logger.info("Method for finding the longest faculty name was invoked");
+        return facultyRepository.findAll().stream()
+                .map(Faculty::getName)
+                .max(Comparator.comparingInt(String::length))
+                .orElse(null);
+    }
 }
+

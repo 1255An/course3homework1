@@ -22,7 +22,7 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 @Transactional
 public class AvatarServiceImpl implements AvatarService {
 
-    Logger logger = LoggerFactory.getLogger(AvatarServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(AvatarServiceImpl.class);
 
     @Value("/avatars")
     private String avatarsDir;
@@ -41,8 +41,9 @@ public class AvatarServiceImpl implements AvatarService {
         logger.info("Method for uploading avatar was invoked");
         Student student = studentService.findStudent(studentId);
         if (student == null) {
-            logger.error("Student with id: {} not found", studentId);
-            throw new IllegalArgumentException("Student with id " + studentId + " not found");
+            String errMsg = "Student with id " + studentId + " not found";
+            logger.error(errMsg);
+            throw new IllegalArgumentException(errMsg);
         }
         Path filePath = createImageFilePath(avatarFile, student);
         saveImageToFile(avatarFile, filePath);
@@ -60,7 +61,7 @@ public class AvatarServiceImpl implements AvatarService {
 
     @Override
     public List<Avatar> getPageAvatar(int page, int size) {
-        logger.info("Method for getting page avatar was invoked");
+        logger.info("Method for getting avatars page {} of size {} was invoked", page, size);
         PageRequest pageRequest = PageRequest.of(page - 1, size);
         return avatarRepository.findAll(pageRequest).toList();
     }
