@@ -29,4 +29,8 @@ public interface StudentService {
     List<String> getStudentsNameStartsWithA();
 
     int quickSumOfSequence();
+
+    void getStudentsThreads();
+
+    void getStudentsSyncThreads();
 }

@@ -7,7 +7,6 @@ import ru.hogwarts.course3.school.model.Student;
 import ru.hogwarts.course3.school.repository.StudentRepository;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -113,11 +112,56 @@ public class StudentServiceImpl implements StudentService {
                 .collect(Collectors.toList());
         int result = sequence.stream()
                 .parallel()
-                .mapToInt(a->a)
+                .mapToInt(a -> a)
                 .sum();
         return result;
     }
+
+    @Override
+    public void getStudentsThreads() {
+        printStudent(1l);
+        printStudent(2l);
+
+        new Thread(() -> {
+            System.out.println(Thread.currentThread().getName() + " is created");
+            printStudent(3l);
+            printStudent(4l);
+        }).start();
+
+        new Thread(() -> {
+            System.out.println(Thread.currentThread().getName() + " is created");
+            printStudent(5l);
+            printStudent(6l);
+        }).start();
+    }
+
+    @Override
+    public void getStudentsSyncThreads() {
+        printStudentSync(1l);
+        printStudentSync(2l);
+
+        new Thread(() -> {
+            System.out.println("Synchronized " + Thread.currentThread().getName() + " is created");
+            printStudentSync(3l);
+            printStudentSync(4l);
+        }).start();
+
+        new Thread(() -> {
+            System.out.println("Synchronized " + Thread.currentThread().getName() + " is created");
+            printStudentSync(5l);
+            printStudentSync(6l);
+        }).start();
+    }
+
+    public void printStudent(Long id) {
+        System.out.println(studentRepository.getById(id));
+    }
+
+    public synchronized void printStudentSync(Long id) {
+        System.out.println(studentRepository.getById(id));
+    }
 }
+
 
 
 

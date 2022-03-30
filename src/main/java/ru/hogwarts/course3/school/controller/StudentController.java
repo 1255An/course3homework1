@@ -92,4 +92,15 @@ public class StudentController {
     public int quickSumOfSequence() {
         return studentService.quickSumOfSequence();
     }
+
+
+    @GetMapping("/studentsThreads")
+    public void getStudentsThreads() {
+        studentService.getStudentsThreads();
+    }
+
+    @GetMapping("/studentsSyncThreads")
+    public void getStudentsSyncThreads() {
+        studentService.getStudentsSyncThreads();
+    }
 }
